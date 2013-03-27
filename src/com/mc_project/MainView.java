@@ -1,10 +1,11 @@
 package com.mc_project;
 
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -74,9 +75,16 @@ public class MainView extends VerticalLayout implements View {
 		mPanel.setContent(panelContent); // Also clears
 
 		if (event.getParameters() == null || event.getParameters().isEmpty()) {
-			panelContent
-					.addComponent(new Label(
-							"Will be logo, when Alex gets his thumb out of his hole and John figures of the shittub"));
+
+			Label topGap = new Label("");
+			panelContent.addComponent(topGap);
+
+			Image image = new Image("", new ThemeResource("img/DrSoftLogo_w.jpg"));
+			panelContent.addComponent(image);
+			panelContent.setSpacing(true);
+			Label botomGap = new Label("");
+			panelContent.addComponent(botomGap);
+
 		}
 
 		if (event.getParameters().contentEquals("searchPatient")) {
