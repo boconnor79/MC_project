@@ -1,5 +1,6 @@
 package com.mc_project;
 
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
@@ -7,6 +8,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 
 @SuppressWarnings("serial")
 public class MainView extends VerticalLayout implements View {
@@ -52,6 +54,16 @@ public class MainView extends VerticalLayout implements View {
 
 		addComponent(hLayout);
 		setExpandRatio(hLayout, 1.0f);
+
+		// Allow going back to the start
+		Button logout = new Button("Logout", new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Mc_projectUI.navigator.navigateTo("");
+			}
+		});
+		addComponent(logout);
 	}
 
 	// Dynamically loading data
@@ -66,8 +78,8 @@ public class MainView extends VerticalLayout implements View {
 					.addComponent(new Label(
 							"Will be logo, when Alex gets his thumb out of his hole and John figures of the shittub"));
 		}
-		
-		if (event.getParameters().contentEquals("searchPatient")){
+
+		if (event.getParameters().contentEquals("searchPatient")) {
 			PatientManager pm = new PatientManager();
 			panelContent.addComponent(pm);
 		}

@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
@@ -112,7 +115,15 @@ public class StartView extends VerticalLayout implements View {
 	 */
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Notification.show("Welcome to DrSoft");
+		Notification notification = new Notification(
+				"\n" + "Welcome to DrSoft Appointment Solutions" + "\n",
+				"by MourceCode");
+
+		notification.setDelayMsec(10000);
+		notification.setPosition(Position.TOP_CENTER);
+		notification.show(Page.getCurrent());
+		notification.setIcon(new ThemeResource("img/DrSoftLogo1.png"));
+
 	}
 
 }
