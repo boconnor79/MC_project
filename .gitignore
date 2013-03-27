@@ -1,3 +1,11 @@
+# Directories #
+build/
+
+# Named Files #
+ivy.xml
+ivysettings.xml
+
+# Classes not in build #
 *.class
 
 # Package Files #
