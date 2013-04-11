@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 
 public class MyDatabaseHandler {
 	Statement stat;
-	
-	//Creates databaseConnection
+
+	// Creates databaseConnection
 	public MyDatabaseHandler() {
 		try {
 			Context ctx = new InitialContext();
@@ -30,17 +30,17 @@ public class MyDatabaseHandler {
 		} catch (Exception e) {
 		}
 	}
-	
-	//Used for Queries expecting results
-	//Select Statements
-	//e.g. ResultSet rs = dbHandler.retQuery("select * from table");
+
+	// Used for Queries expecting results
+	// Select Statements
+	// e.g. ResultSet rs = dbHandler.retQuery("select * from table");
 	public ResultSet retQuery(String query) throws SQLException {
 		ResultSet rs = stat.executeQuery(query);
 		return rs;
 	}
-	
-	//Used for Queries just carrying out query
-	//Insert, Delete, etc...
+
+	// Used for Queries just carrying out query
+	// Insert, Delete, etc...
 	public void nonRetQuery(String query) throws SQLException {
 		stat.executeQuery(query);
 	}

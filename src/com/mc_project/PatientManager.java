@@ -2,12 +2,12 @@ package com.mc_project;
 
 import java.sql.ResultSet;
 
-import com.vaadin.ui.Alignment;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -19,10 +19,19 @@ public class PatientManager extends VerticalLayout {
 	TextField searchField = new TextField();
 	Button searchButton = new Button("Submit");
 	Label spacer = new Label(" ");
+	Label message = new Label();
 	Table patientList = new Table("Patient List");
 	MyDatabaseHandler mydbh = new MyDatabaseHandler();
 	HorizontalLayout hl = new HorizontalLayout();
-	private Button rmvPatientButton, updPatientButton;
+	private Button delPatientButton, updPatientButton;
+
+	// Patient Details Fields
+	final TextField fNameField = new TextField("First Name :");
+	final TextField sNameField = new TextField("Last Name :");
+	final TextField addressField = new TextField("Address :");
+	final TextField telNoField = new TextField("Tel No :");
+	final TextField dobField = new TextField("D.O.B :");
+	final TextField genderField = new TextField("Gender :");
 
 	public PatientManager() {
 		setSizeFull();
@@ -70,7 +79,7 @@ public class PatientManager extends VerticalLayout {
 		editDetails.setSizeFull();
 
 		// results area
-		patientList.addContainerProperty("Firstname", String.class, null);
+		patientList.addContainerProperty("First name", String.class, null);
 		patientList.addContainerProperty("Surname", String.class, null);
 		patientList.addContainerProperty("DOB", String.class, null);
 		patientList.setSizeFull();
@@ -81,44 +90,116 @@ public class PatientManager extends VerticalLayout {
 		results.addComponent(patientList);
 
 		// editDetails area
-		FormLayout editContent = new FormLayout();
-		final TextField fNameField = new TextField("First Name :");
+		final FormLayout form = new FormLayout();
 		fNameField.setWidth("100%");
-		editContent.addComponent(fNameField);
-
-		final TextField sNameField = new TextField("Last Name :");
+		form.addComponent(fNameField);
 		sNameField.setWidth("100%");
-		editContent.addComponent(sNameField);
-		
-		final TextField addressField = new TextField("Address :");
+		form.addComponent(sNameField);
 		addressField.setWidth("100%");
-		editContent.addComponent(addressField);
-	
-		final TextField telNoField = new TextField("Tel No :");
+		form.addComponent(addressField);
 		telNoField.setWidth("100%");
-		editContent.addComponent(telNoField);
-		
-		final TextField dobField = new TextField("D.O.B :");
+		form.addComponent(telNoField);
 		dobField.setWidth("100%");
-		editContent.addComponent(dobField);
-		
-		final TextField genderField = new TextField("Gender :");
+		form.addComponent(dobField);
 		genderField.setWidth("100%");
-		editContent.addComponent(genderField);
-		
+		form.addComponent(genderField);
+
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		//buttonLayout.setSizeFull();
+		// buttonLayout.setSizeFull();
 		updPatientButton = new Button("Update Patient");
-		rmvPatientButton = new Button("Remove Patient");
+		delPatientButton = new Button("Delete Patient");
 		buttonLayout.addComponent(updPatientButton);
-		buttonLayout.addComponent(rmvPatientButton);
-		editContent.addComponent(buttonLayout);
-		editDetails.addComponent(editContent);
+		buttonLayout.addComponent(delPatientButton);
+		form.addComponent(buttonLayout);
+		editDetails.addComponent(form);
 		editDetails.setMargin(true);
 		editDetails.setVisible(true);
 		addComponent(vsp);
 		setExpandRatio(vsp, 1);
 
+		patientList.addValueChangeListener(new Property.ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				SharedValues.PatientId = patientList.getValue().toString();
+				displayDetails();
+			}
+		});
+
+		updPatientButton.addClickListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				updatePatient();
+
+			}
+		});
+
+		delPatientButton.addClickListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				deletePatient();
+
+			}
+		});
+
+	}
+
+	private void displayDetails() {
+		try {
+			ResultSet rs = mydbh
+					.retQuery("Select * from patient where PatientID = "
+							+ SharedValues.PatientId);
+			while (rs.next()) {
+				fNameField.setValue(rs.getString(2));
+				sNameField.setValue(rs.getString(3));
+				addressField.setValue(rs.getString(4));
+				telNoField.setValue(rs.getString(5));
+				dobField.setValue(rs.getString(6));
+				genderField.setValue(rs.getString(7));
+			}
+			rs.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void updatePatient() {
+		try {
+			ResultSet rs = mydbh
+					.retQuery("update patient set P_FName = 'setValue(rs.getString(2))', P_SName = 'setValue(rs.getString(3))', P_address = 'addressField.setValue(rs.getString(4))', P_TelNo = 'telNoField.setValue(rs.getString(5))', P_DOB = 'dobField.setValue(rs.getString(6))', P_Gender = 'genderField.setValue(rs.getString(7))' where PatientID = "
+							+ SharedValues.PatientId);
+			while (rs.next()) {
+				
+			}
+			rs.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void deletePatient() {
+		try {
+			ResultSet rs = mydbh
+					.retQuery("delete from patient where PatientID = "
+							+ SharedValues.PatientId);
+			while (rs.next()) {
+				patientList.commit();
+				patientList.addItem(
+						new Object[] { rs.getString(2), rs.getString(3),
+								rs.getString(6) }, rs.getInt(1));
+
+			}
+			rs.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// adds search bar and button
@@ -134,4 +215,5 @@ public class PatientManager extends VerticalLayout {
 
 		addComponent(hl);
 	}
+
 }
