@@ -90,18 +90,28 @@ public class StartView extends VerticalLayout implements View {
 	protected void checkDatabase(String uname, String pword) {
 		MyDatabaseHandler mydbh = new MyDatabaseHandler();
 		try {
-			ResultSet rs = mydbh.retQuery("select * from staff where UName = '"
-					+ uname + "' and PWord = '" + pword + "'");
+			System.out.print("TRY");
+			ResultSet rs = mydbh
+					.retQuery("select * from staff where S_uname = '" + uname
+							+ "' and S_pword = '" + pword + "'");	
 			if (rs.next()) {
+				
 				SharedValues.StaffID = rs.getString(1).toString();
-				SharedValues.StaffName = rs.getString(2).toString();
-				SharedValues.StaffType = rs.getString(6).toString();
+				SharedValues.StaffName = rs.getString(2);
+				SharedValues.StaffType = rs.getString(6);
+				
+
 				Mc_projectUI.navigator.navigateTo(Mc_projectUI.MAINVIEW);
 			} else if (!rs.next()) {
 				errorMessage.setValue("Invalid Username/Password Combination");
 			}
 			rs.close();
 		} catch (Exception e) {
+			System.out.println("StaffID =" + SharedValues.StaffID);
+			System.out.println("StaffName =" + SharedValues.StaffName);
+			System.out.println("StaffType =" + SharedValues.StaffType);
+			System.out.println("username =" + uname);
+			System.out.println("password =" + pword);
 			System.out.println("Login Error");
 		}
 	}
@@ -115,8 +125,8 @@ public class StartView extends VerticalLayout implements View {
 	 */
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Notification notification = new Notification(
-				"\n" + "Welcome to DrSoft Appointment Solutions" + "\n",
+		Notification notification = new Notification("\n"
+				+ "Welcome to DrSoft Appointment Solutions" + "\n",
 				"by MourceCode");
 
 		notification.setDelayMsec(10000);

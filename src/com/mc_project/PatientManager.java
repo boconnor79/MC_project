@@ -168,11 +168,16 @@ public class PatientManager extends VerticalLayout {
 
 	private void updatePatient() {
 		try {
-			ResultSet rs = mydbh
-					.retQuery("update patient set P_FName = 'setValue(rs.getString(2))', P_SName = 'setValue(rs.getString(3))', P_address = 'addressField.setValue(rs.getString(4))', P_TelNo = 'telNoField.setValue(rs.getString(5))', P_DOB = 'dobField.setValue(rs.getString(6))', P_Gender = 'genderField.setValue(rs.getString(7))' where PatientID = "
-							+ SharedValues.PatientId);
+			ResultSet rs = mydbh.retQuery("update patient set P_FName = '"
+					+ fNameField.getValue() + "', P_SName = '"
+					+ sNameField.getValue() + "', P_address = '"
+					+ addressField.getValue() + "', P_TelNo = '"
+					+ telNoField.getValue() + "', P_DOB = '"
+					+ dobField.getValue() + "', P_Gender = '"
+					+ genderField.getValue() + "' where PatientID = "
+					+ SharedValues.PatientId);
 			while (rs.next()) {
-				
+
 			}
 			rs.close();
 
