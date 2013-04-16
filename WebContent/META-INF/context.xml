@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context>  
-  <Resource name="jdbc/surgery" 
-            auth="Container" 
-            type="javax.sql.DataSource" 
-            driverClassName="org.sqlite.JDBC"
-            url="jdbc:sqlite:/${catalina.home}/data/surgery"
-            factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory">
-  </Resource>
+<Context>
+	<Resource name="jdbc/surgery_data" auth="Container" type="javax.sql.DataSource"
+		driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/surgery_data"
+		username="root" maxActive="15" maxIdle="3">
+	</Resource>
 </Context>

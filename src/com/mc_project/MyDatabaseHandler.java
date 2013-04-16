@@ -7,65 +7,35 @@
 
 package com.mc_project;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 public class MyDatabaseHandler {
-
-	private Statement statement;
-	// private PreparedStatement preparedStatement = null;
-	private ResultSet resultSet = null;
-	Connection connection = null;
+	Connection conn;
 
 	// Creates databaseConnection
 	public MyDatabaseHandler() {
-		System.out
-				.println("-------- MySQL JDBC Connection Testing ------------");
-
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.out.println("Where is your MySQL JDBC Driver?");
-			e.printStackTrace();
-			return;
-		}
-
-		System.out.println("MySQL JDBC Driver Registered!");
-		connection = null;
-
-		try {
-			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/surgery", "root", "");
-
-		} catch (SQLException e) {
-			System.out.println("Connection Failed! Check output console");
-			e.printStackTrace();
-			return;
-		}
-
-		if (connection != null) {
-			System.out.println("You made it, take control your database now!");
-		} else {
-			System.out.println("Failed to make connection!");
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/surgery_data");
+			conn = ds.getConnection();
+		} catch (Exception e) {
+			Logger log = new Logger();
+			log.logCreator("Database connection fault");
 		}
 	}
 
-	// Used for Queries expecting results
-	// Select Statements
-	// e.g. ResultSet rs = dbHandler.retQuery("select * from table");
-	public ResultSet retQuery(String query) throws SQLException {
-		ResultSet rs = statement.executeQuery(query);
-		return rs;
+	public Connection getConn() {
+		Logger log = new Logger();
+		log.logCreator("Database Connected");
+		return conn;
 	}
 
-	// Used for Queries just carrying out query
-	// Insert, Delete, etc...
-	public void nonRetQuery(String query) throws SQLException {
-		statement.executeQuery(query);
+	public void setConn(Connection conn) {
+		this.conn = conn;
 	}
-
 }

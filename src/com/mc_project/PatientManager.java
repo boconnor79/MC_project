@@ -1,5 +1,7 @@
 package com.mc_project;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.vaadin.data.Property;
@@ -44,11 +46,13 @@ public class PatientManager extends VerticalLayout {
 			public void buttonClick(ClickEvent event) {
 				hl.setVisible(false);
 				try {
-					ResultSet rs = mydbh
-							.retQuery("Select * from patient where P_FName like '"
+					Connection conn = new MyDatabaseHandler().getConn();
+					PreparedStatement stat = conn
+							.prepareStatement("Select * from patient where P_FName like '"
 									+ searchField.getValue()
 									+ "%' or P_SName like '"
 									+ searchField.getValue() + "%'");
+					ResultSet rs = stat.executeQuery();
 					while (rs.next()) {
 						patientList.addItem(
 								new Object[] { rs.getString(2),
@@ -105,7 +109,6 @@ public class PatientManager extends VerticalLayout {
 		form.addComponent(genderField);
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
-		// buttonLayout.setSizeFull();
 		updPatientButton = new Button("Update Patient");
 		delPatientButton = new Button("Delete Patient");
 		buttonLayout.addComponent(updPatientButton);
@@ -117,6 +120,8 @@ public class PatientManager extends VerticalLayout {
 		addComponent(vsp);
 		setExpandRatio(vsp, 1);
 
+		// gets the id of the selected patient 
+		// and displays details in text fields
 		patientList.addValueChangeListener(new Property.ValueChangeListener() {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
@@ -126,11 +131,9 @@ public class PatientManager extends VerticalLayout {
 		});
 
 		updPatientButton.addClickListener(new Button.ClickListener() {
-
 			@Override
 			public void buttonClick(ClickEvent event) {
 				updatePatient();
-
 			}
 		});
 
@@ -147,9 +150,11 @@ public class PatientManager extends VerticalLayout {
 
 	private void displayDetails() {
 		try {
-			ResultSet rs = mydbh
-					.retQuery("Select * from patient where PatientID = "
+			Connection conn = new MyDatabaseHandler().getConn();
+			PreparedStatement stat = conn
+					.prepareStatement("Select * from patient where PatientID = "
 							+ SharedValues.PatientId);
+			ResultSet rs = stat.executeQuery();
 			while (rs.next()) {
 				fNameField.setValue(rs.getString(2));
 				sNameField.setValue(rs.getString(3));
@@ -167,20 +172,25 @@ public class PatientManager extends VerticalLayout {
 	}
 
 	private void updatePatient() {
+
 		try {
-			ResultSet rs = mydbh.retQuery("update patient set P_FName = '"
-					+ fNameField.getValue() + "', P_SName = '"
-					+ sNameField.getValue() + "', P_address = '"
-					+ addressField.getValue() + "', P_TelNo = '"
-					+ telNoField.getValue() + "', P_DOB = '"
-					+ dobField.getValue() + "', P_Gender = '"
-					+ genderField.getValue() + "' where PatientID = "
-					+ SharedValues.PatientId);
-			while (rs.next()) {
-
-			}
-			rs.close();
-
+			Connection conn = new MyDatabaseHandler().getConn();
+			PreparedStatement stat = conn
+					.prepareStatement("UPDATE `surgery_data`.`patient` SET `P_FName` = '"
+							+ fNameField.getValue()
+							+ "', `P_SName` = '"
+							+ sNameField.getValue()
+							+ "', `P_address` = '"
+							+ addressField.getValue()
+							+ "', `P_TelNo` = '"
+							+ telNoField.getValue()
+							+ "', `P_DOB` = '"
+							+ dobField.getValue()
+							+ "', `P_Gender` = '"
+							+ genderField.getValue()
+							+ "' WHERE `patient`.`PatientID` ="
+							+ SharedValues.PatientId);
+			stat.executeUpdate();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -188,18 +198,13 @@ public class PatientManager extends VerticalLayout {
 	}
 
 	private void deletePatient() {
-		try {
-			ResultSet rs = mydbh
-					.retQuery("delete from patient where PatientID = "
-							+ SharedValues.PatientId);
-			while (rs.next()) {
-				patientList.commit();
-				patientList.addItem(
-						new Object[] { rs.getString(2), rs.getString(3),
-								rs.getString(6) }, rs.getInt(1));
 
-			}
-			rs.close();
+		try {
+			Connection conn = new MyDatabaseHandler().getConn();
+			PreparedStatement stat = conn
+					.prepareStatement("DELETE FROM `surgery_data`.`patient` WHERE `patient`.`PatientID` ="
+							+ SharedValues.PatientId);
+			stat.executeUpdate();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

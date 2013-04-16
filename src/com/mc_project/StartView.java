@@ -3,6 +3,8 @@
  */
 package com.mc_project;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.vaadin.navigator.View;
@@ -88,31 +90,21 @@ public class StartView extends VerticalLayout implements View {
 	}
 
 	protected void checkDatabase(String uname, String pword) {
-		MyDatabaseHandler mydbh = new MyDatabaseHandler();
 		try {
-			System.out.print("TRY");
-			ResultSet rs = mydbh
-					.retQuery("select * from staff where S_uname = '" + uname
-							+ "' and S_pword = '" + pword + "'");	
-			if (rs.next()) {
-				
+			Connection conn = new MyDatabaseHandler().getConn();
+			PreparedStatement stat = conn
+					.prepareStatement("select * from staff where s_uname = '"
+							+ uname + "' and s_pword = '" + pword + "'");
+			ResultSet rs = stat.executeQuery();
+			while (rs.next()) {
 				SharedValues.StaffID = rs.getString(1).toString();
 				SharedValues.StaffName = rs.getString(2);
 				SharedValues.StaffType = rs.getString(6);
-				
-
 				Mc_projectUI.navigator.navigateTo(Mc_projectUI.MAINVIEW);
-			} else if (!rs.next()) {
-				errorMessage.setValue("Invalid Username/Password Combination");
 			}
-			rs.close();
 		} catch (Exception e) {
-			System.out.println("StaffID =" + SharedValues.StaffID);
-			System.out.println("StaffName =" + SharedValues.StaffName);
-			System.out.println("StaffType =" + SharedValues.StaffType);
-			System.out.println("username =" + uname);
-			System.out.println("password =" + pword);
-			System.out.println("Login Error");
+			Logger log = new Logger();
+			log.logCreator("Login Error");
 		}
 	}
 
