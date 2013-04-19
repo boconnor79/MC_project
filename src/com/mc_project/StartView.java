@@ -6,7 +6,6 @@ package com.mc_project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
@@ -16,7 +15,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
@@ -30,8 +28,16 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 @SuppressWarnings("serial")
 public class StartView extends VerticalLayout implements View {
+	@SuppressWarnings("deprecation")
+	Notification loginErrNote = new Notification("Incorrect login details\n",
+			"Please enter a valid email and password",
+			Notification.TYPE_ERROR_MESSAGE);
+	Notification blankErrNote = new Notification("Fields Blank\n",
+			"Please enter your email and password",
+			Notification.TYPE_ERROR_MESSAGE);
 
-	Label errorMessage;
+	final TextField username = new TextField("Username :");
+	final PasswordField password = new PasswordField("Password :");
 
 	public StartView() {
 		setSizeFull();
@@ -46,14 +52,13 @@ public class StartView extends VerticalLayout implements View {
 
 		// Create the content
 		FormLayout content = new FormLayout();
-		final TextField username = new TextField("Username :");
+
 		username.setWidth("300px");
 		username.setRequired(true);
 		username.setInputPrompt("Your username(eg. name@email.com)");
 
 		content.addComponent(username);
 
-		final PasswordField password = new PasswordField("Password :");
 		password.setWidth("300px");
 		password.setRequired(true);
 
@@ -81,8 +86,6 @@ public class StartView extends VerticalLayout implements View {
 		buttonArea.addComponent(submit);
 
 		content.addComponent(buttonArea);
-		errorMessage = new Label("");
-		content.addComponent(errorMessage);
 		content.setSizeFull();
 		content.setMargin(true);
 
@@ -96,11 +99,20 @@ public class StartView extends VerticalLayout implements View {
 					.prepareStatement("select * from staff where s_uname = '"
 							+ uname + "' and s_pword = '" + pword + "'");
 			ResultSet rs = stat.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				SharedValues.StaffID = rs.getString(1).toString();
 				SharedValues.StaffName = rs.getString(2);
 				SharedValues.StaffType = rs.getString(6);
 				Mc_projectUI.navigator.navigateTo(Mc_projectUI.MAINVIEW);
+			}
+			else if (username.getValue() == "" && password.getValue() == "") {
+				blankErrNote.show(Page.getCurrent());
+				blankErrNote.setDelayMsec(500);
+				blankErrNote.setPosition(Position.MIDDLE_CENTER);
+			} else {
+				loginErrNote.show(Page.getCurrent());
+				loginErrNote.setDelayMsec(500);
+				loginErrNote.setPosition(Position.MIDDLE_CENTER);
 			}
 		} catch (Exception e) {
 			Logger log = new Logger();

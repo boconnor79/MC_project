@@ -21,6 +21,8 @@ import com.vaadin.ui.Button.ClickEvent;
 
 @SuppressWarnings("serial")
 public class PatientManager extends VerticalLayout {
+
+	// initial components
 	TextField searchField = new TextField();
 	Button searchButton = new Button("Submit");
 	Label spacer = new Label(" ");
@@ -29,10 +31,9 @@ public class PatientManager extends VerticalLayout {
 	MyDatabaseHandler mydbh = new MyDatabaseHandler();
 	HorizontalLayout hl = new HorizontalLayout();
 	private Button delPatientButton, updPatientButton;
-	AddNewPatient anp = new AddNewPatient();
 	Notification updNote = new Notification("Patient updated successfully");
 	Notification delNote = new Notification("Patient deleted successfully");
-	
+
 	// Patient Details Fields
 	final TextField fNameField = new TextField("First Name :");
 	final TextField sNameField = new TextField("Last Name :");
@@ -127,7 +128,7 @@ public class PatientManager extends VerticalLayout {
 		addComponent(vsp);
 		setExpandRatio(vsp, 1);
 
-		// gets the id of the selected patient 
+		// gets the id of the selected patient
 		// and displays details in text fields
 		patientList.addValueChangeListener(new Property.ValueChangeListener() {
 			@Override
@@ -144,7 +145,7 @@ public class PatientManager extends VerticalLayout {
 				updNote.setDelayMsec(500);
 				updNote.setPosition(Position.MIDDLE_CENTER);
 				updatePatient();
-				anp.clearValues();
+				clearValues();
 			}
 		});
 
@@ -152,13 +153,12 @@ public class PatientManager extends VerticalLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				
+
 				delNote.show(Page.getCurrent());
 				delNote.setDelayMsec(500);
 				delNote.setPosition(Position.MIDDLE_CENTER);
 				deletePatient();
-				anp.clearValues();
-
+				clearValues();
 			}
 		});
 
@@ -207,6 +207,8 @@ public class PatientManager extends VerticalLayout {
 							+ "' WHERE `patient`.`PatientID` ="
 							+ SharedValues.PatientId);
 			stat.executeUpdate();
+			stat.close();
+			conn.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -221,6 +223,8 @@ public class PatientManager extends VerticalLayout {
 					.prepareStatement("DELETE FROM `surgery_data`.`patient` WHERE `patient`.`PatientID` ="
 							+ SharedValues.PatientId);
 			stat.executeUpdate();
+			stat.close();
+			conn.close();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -240,6 +244,15 @@ public class PatientManager extends VerticalLayout {
 		hl.setExpandRatio(searchField, 1);
 
 		addComponent(hl);
+	}
+	
+	protected void clearValues() {
+		fNameField.setValue("");
+		sNameField.setValue("");
+		addressField.setValue("");
+		telNoField.setValue("");
+		dobField.setValue("");
+		genderField.setValue("");
 	}
 
 }
