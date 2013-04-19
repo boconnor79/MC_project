@@ -23,6 +23,7 @@ public class MainView extends VerticalLayout implements View {
 		HorizontalLayout hLayout;
 		hLayout = new HorizontalLayout();
 		hLayout.setSizeFull();
+		hLayout.setSpacing(true);
 
 		mainMenu.setHeight("100%");
 		mainMenu.setWidth(null);
@@ -33,15 +34,18 @@ public class MainView extends VerticalLayout implements View {
 		// menu options
 		menuContent.addComponent(new Button("Search Patients",
 				new MenuListener("searchPatient")));
+		menuContent.addComponent(new Button("Add New Patient",
+				new MenuListener("addNewPatient")));
 
 		menuContent.setWidth(null);
 		menuContent.setMargin(true);
+		menuContent.setSpacing(true);
 		mainMenu.setContent(menuContent);
-
+		
 		hLayout.addComponent(mainMenu);
 		addComponent(hLayout);
 
-		// A panel that contains a content area on right
+		// A panel that contains a content area in middle
 		mPanel = new Panel(" Main Content");
 		mPanel.setSizeFull();
 		hLayout.addComponent(mPanel);
@@ -65,6 +69,7 @@ public class MainView extends VerticalLayout implements View {
 			}
 		});
 		addComponent(logout);
+		setSpacing(true);
 	}
 
 	// Dynamically loading data
@@ -72,6 +77,7 @@ public class MainView extends VerticalLayout implements View {
 	public void enter(ViewChangeEvent event) {
 		VerticalLayout panelContent = new VerticalLayout();
 		panelContent.setSizeFull();
+		//panelContent.setSpacing(true);
 		mPanel.setContent(panelContent); // Also clears
 
 		if (event.getParameters() == null || event.getParameters().isEmpty()) {
@@ -79,7 +85,8 @@ public class MainView extends VerticalLayout implements View {
 			Label topGap = new Label("");
 			panelContent.addComponent(topGap);
 
-			Image image = new Image("", new ThemeResource("img/DrSoftLogo_w.jpg"));
+			Image image = new Image("", new ThemeResource(
+					"img/DrSoftLogo_w.jpg"));
 			panelContent.addComponent(image);
 			panelContent.setSpacing(true);
 			Label botomGap = new Label("");
@@ -90,6 +97,11 @@ public class MainView extends VerticalLayout implements View {
 		if (event.getParameters().contentEquals("searchPatient")) {
 			PatientManager pm = new PatientManager();
 			panelContent.addComponent(pm);
+		}
+		
+		if (event.getParameters().contentEquals("addNewPatient")) {
+			AddNewPatient anp = new AddNewPatient();
+			panelContent.addComponent(anp);
 		}
 
 	}

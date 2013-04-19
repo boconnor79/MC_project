@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -26,7 +29,10 @@ public class PatientManager extends VerticalLayout {
 	MyDatabaseHandler mydbh = new MyDatabaseHandler();
 	HorizontalLayout hl = new HorizontalLayout();
 	private Button delPatientButton, updPatientButton;
-
+	AddNewPatient anp = new AddNewPatient();
+	Notification updNote = new Notification("Patient updated successfully");
+	Notification delNote = new Notification("Patient deleted successfully");
+	
 	// Patient Details Fields
 	final TextField fNameField = new TextField("First Name :");
 	final TextField sNameField = new TextField("Last Name :");
@@ -113,6 +119,7 @@ public class PatientManager extends VerticalLayout {
 		delPatientButton = new Button("Delete Patient");
 		buttonLayout.addComponent(updPatientButton);
 		buttonLayout.addComponent(delPatientButton);
+		buttonLayout.setSpacing(true);
 		form.addComponent(buttonLayout);
 		editDetails.addComponent(form);
 		editDetails.setMargin(true);
@@ -133,7 +140,11 @@ public class PatientManager extends VerticalLayout {
 		updPatientButton.addClickListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
+				updNote.show(Page.getCurrent());
+				updNote.setDelayMsec(500);
+				updNote.setPosition(Position.MIDDLE_CENTER);
 				updatePatient();
+				anp.clearValues();
 			}
 		});
 
@@ -141,7 +152,12 @@ public class PatientManager extends VerticalLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				
+				delNote.show(Page.getCurrent());
+				delNote.setDelayMsec(500);
+				delNote.setPosition(Position.MIDDLE_CENTER);
 				deletePatient();
+				anp.clearValues();
 
 			}
 		});
